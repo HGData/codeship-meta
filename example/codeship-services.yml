@@ -1,0 +1,31 @@
+---
+ubuntu:
+  build:
+    context: docker/ubuntu
+    dockerfile_path: Dockerfile
+  encrypted_dockercfg_path: dockercfg.encrypted
+ubuntu-builder:
+  depends_on:
+    - ubuntu
+  build:
+    context: docker/ubuntu
+    dockerfile_path: Dockerfile.builder
+  encrypted_dockercfg_path: dockercfg.encrypted
+  volumes:
+    - "./docker/ubuntu/test:/mnt"
+debian:
+  build:
+    context: docker/debian
+    dockerfile_path: Dockerfile
+  encrypted_dockercfg_path: dockercfg.encrypted
+alpine:
+  build:
+    context: docker/alpine
+    dockerfile_path: Dockerfile
+  encrypted_dockercfg_path: dockercfg.encrypted
+
+hadolint:
+  image: hadolint/hadolint:v1.23.0-alpine
+  volumes:
+    - ./:/mnt
+  encrypted_dockercfg_path: dockercfg.encrypted

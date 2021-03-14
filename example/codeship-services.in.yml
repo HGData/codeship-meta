@@ -1,0 +1,25 @@
+---
+{% for image in images %}
+{{ image.name }}:
+  build:
+    context: docker/{{ image.name }}
+    dockerfile_path: Dockerfile
+  encrypted_dockercfg_path: dockercfg.encrypted
+{% if image.builder %}
+{{ image.name }}-builder:
+  depends_on:
+    - {{ image.name }}
+  build:
+    context: docker/{{ image.name }}
+    dockerfile_path: Dockerfile.builder
+  encrypted_dockercfg_path: dockercfg.encrypted
+  volumes:
+    - "./docker/{{ image.name }}/test:/mnt"
+{% endif %}
+{% endfor %}
+
+hadolint:
+  image: hadolint/hadolint:v1.23.0-alpine
+  volumes:
+    - ./:/mnt
+  encrypted_dockercfg_path: dockercfg.encrypted

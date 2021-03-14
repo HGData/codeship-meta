@@ -1,0 +1,7 @@
+---
+version: "3.9"
+services:
+  meta:
+    image: cdeutsch/codeship-meta:latest
+    build:
+      context: src

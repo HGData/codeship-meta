@@ -1,0 +1,47 @@
+---
+- type: serial
+  name: ubuntu
+  steps:
+    - name: lint_ubuntu
+      service: hadolint
+      command: hadolint -c /mnt/hadolint.yml /mnt/docker/ubuntu/Dockerfile
+    - name: test_ubuntu
+      service: ubuntu-builder
+      command: /usr/bin/bats /mnt
+    - name: publish_ubuntu
+      tag: ^main$
+      service: ubuntu
+      type: push
+      image_name: cdeutsch/ubuntu
+      image_tag: "latest"
+      registry: https://index.docker.io/v1/
+      encrypted_dockercfg_path: dockercfg.encrypted
+- type: serial
+  name: debian
+  steps:
+    - name: lint_debian
+      service: hadolint
+      command: hadolint -c /mnt/hadolint.yml /mnt/docker/debian/Dockerfile
+    - name: test_debian
+      service: debian
+      command: nginx -t
+    - name: publish_debian
+      tag: ^main$
+      service: debian
+      type: push
+      image_name: cdeutsch/debian
+      image_tag: "latest"
+      registry: https://index.docker.io/v1/
+      encrypted_dockercfg_path: dockercfg.encrypted
+- type: serial
+  name: alpine
+  steps:
+    - name: publish_alpine
+      tag: ^main$
+      service: alpine
+      type: push
+      image_name: cdeutsch/alpine
+      image_tag: "latest"
+      registry: https://index.docker.io/v1/
+      encrypted_dockercfg_path: dockercfg.encrypted
+

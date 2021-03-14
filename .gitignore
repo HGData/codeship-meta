@@ -1,0 +1,5 @@
+*.aes
+*.tmp
+*.key
+dockercfg
+tmp/

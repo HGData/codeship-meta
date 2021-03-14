@@ -1,0 +1,28 @@
+---
+{% for image in images %}
+- type: serial
+  name: {{ image.name }}
+  steps:
+{% if image.lint %}
+    - name: lint_{{ image.name }}
+      service: hadolint
+      command: hadolint -c /mnt/hadolint.yml /mnt/docker/{{ image.name }}/Dockerfile
+{% endif %}
+{% if image.tests %}
+    - name: test_{{ image.name }}
+{% if image.builder %}
+      service: {{ image.name }}-builder
+{% else %}
+      service: {{ image.name }}
+{% endif %}
+      command: {{ image.tests.command|default("/usr/bin/bats /mnt", true) }}
+{% endif %}
+    - name: publish_{{ image.name }}
+      tag: ^main$
+      service: {{ image.name }}
+      type: push
+      image_name: {{ image.repo }}
+      image_tag: "latest"
+      registry: https://index.docker.io/v1/
+      encrypted_dockercfg_path: dockercfg.encrypted
+{% endfor %}

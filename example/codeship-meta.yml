@@ -1,0 +1,23 @@
+---
+# ubuntu image example with lint, builder image and bats tests
+- name: ubuntu
+  repo: cdeutsch/ubuntu
+  lint: true
+  builder: true
+  tests: true
+
+# debian image with nginx that runs an nginx syntax check as a test
+- name: debian
+  repo: cdeutsch/debian
+  lint: true
+  builder: false
+  tests:
+    enabled: true
+    command: nginx -t
+
+# alpine image; tests take up too much space so they have been omitted >:)
+- name: alpine
+  repo: cdeutsch/alpine
+  lint: false
+  builder: false
+  tests: false
